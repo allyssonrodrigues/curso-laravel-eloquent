@@ -2,9 +2,44 @@
 
 use App\Models\Post;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
+Route::get('/soft_deleting', function (Post $post, Request $request) {
+    Post::destroy(3);
+
+    dd(Post::get());
+});
+
+Route::get('/delete', function (Post $post, Request $request) {
+   
+    /** Pode passar um array ou uma collection para deletar */
+    // Post::destroy(id);
+    $post = $post->find(3);
+
+    $post->delete();
+
+    dd(Post::get());
+});
+
+Route::get('/update', function (Post $post, Request $request) {
+   
+    $post = $post->find(1);
+
+    $post->title = 'Alterando o post';
+    $post->save();
+
+    dd($post);
+});
+
+Route::get('/insert_mass', function (Post $post, Request $request) {
+   
+    $post = $post->create($request->all());
+    
+    $posts = $post->get();
+    return $posts;
+});
 
 Route::get('/insert', function (Post $post) {
    
