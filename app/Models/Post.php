@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -16,6 +17,17 @@ class Post extends Model
         'body',
         'date'
     ];
+
+    protected $casts = [
+        'date' => 'datetime:d/m/Y'
+    ] ;
+
+    /** Local Scopes */
+    public function scopeLastWeek($query)
+    {
+        return $this->whereDate('date', '>=', now()->subDays(4))
+                    ->whereDate('date', '<=', now()->subDays(1));
+    }
 
     // /** Quando precisar usar outro nome da tabela no banco*/
     // protected $table = 'postagens';
@@ -44,4 +56,25 @@ class Post extends Model
     // protected $attributes = [ 
     //     'title' => 'Testando a aplicação Laravel'
     // ];
+
+    public function getTitleAttribute($value)
+    {
+        return strtoupper($value);
+    }
+
+    public function getTitleBodyAttribute()
+    {
+        return $this->title.' '.$this->body;
+    }
+
+    public function getDateAttribute($value)
+    {
+        return Carbon::make($value)->format('d/m/Y');
+    }
+
+    public function setDateAttribute($value)
+    {
+        $this->attributes['date'] = Carbon::make($value)->format('Y-m-d');
+    }
+
 }

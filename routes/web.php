@@ -6,6 +6,32 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
+Route::get('/local-scope', function (Post $post, Request $request) {
+    $posts = Post::lastWeek()->get();
+
+    return $posts;
+});
+
+Route::get('/mutators', function (Post $post, Request $request) {
+    $user = User::first();
+
+    $post = Post::create([
+        'user_id' => $user->id,
+        'title' => 'Um novo título '. Str::random(10),
+        'body' => Str::random(100),
+        'date' => now()
+    ]);
+
+    return $post;
+
+});
+
+Route::get('/accessor', function (Post $post, Request $request) {
+    $post = Post::first();
+
+    return $post->getTitleBodyAttribute();
+});
+
 Route::get('/soft_deleting', function (Post $post, Request $request) {
     Post::destroy(3);
 
