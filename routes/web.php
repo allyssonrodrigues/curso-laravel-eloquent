@@ -6,6 +6,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
+/** Scopos Globais */
+Route::get('/anonymous-global-scopes', function (Post $post, Request $request) {
+    //$posts = Post::get();
+
+    /** Não utilizar o scopo global */
+    $posts = Post::withoutGlobalScope('year')->get();
+
+    return $posts;
+});
+
 Route::get('/local-scope', function (Post $post, Request $request) {
     $posts = Post::lastWeek()->get();
 
